@@ -70,12 +70,10 @@ StaticPopupDialogs["SPM_RENAME_BUILD"] = {
         local slot     = self.data.slot
 
         -- Save the new name
-        local oldName = SynastriaPerkManager.GetSlotName(category, slot)
+        local oldName = SynastriaPerkManager.GetSlotName(category, SPMData.builds[category][slot])
         print(string.format("Renamed %s %s to: %s", category, slot, newName))
-        if oldName then 
-            SPMData.builds[category][oldName] = nil
-        end
-        SPMData.builds[category][newName] = slot
+        SPMData.builds[category][newName] = SPMData.builds[category][slot]
+        SPMData.builds[category][oldName] = nil
     end
 }
 
@@ -118,6 +116,7 @@ local function InitializeDB()
 end
 
 function SynastriaPerkManager.MapWidgets()
+    perkWidgetMappings = {}
     for i=1, 200 do -- probably a better way, but I know there's less than 200 perks at a time
         local widget = _G["PerkMgrFrame-PerkLine-"..i]
         if not widget then
@@ -152,7 +151,7 @@ end
 
 function SynastriaPerkManager.LoadPerks(category, slot)
     SynastriaPerkManager.UpdatePerkList()
-    SynastriaPerkManager.TogglePerks(category)
+    SynastriaPerkManager.TogglePerks(category, false)
     SynastriaPerkManager.ClearPerkCategory(category)
 
     SynastriaPerkManager.activePerks[category] = SPMData.builds[category][slot]
@@ -162,7 +161,7 @@ function SynastriaPerkManager.LoadPerks(category, slot)
         UIDropDownMenu_SetText(dd, slot)
     end
 
-    SynastriaPerkManager.TogglePerks(category)
+    SynastriaPerkManager.TogglePerks(category, true)
     SynastriaPerkManager.UpdatePerkList()
 end
 
@@ -183,17 +182,46 @@ function SynastriaPerkManager.ExportPerks(category, perkTable)
 
 end
 
-function SynastriaPerkManager.TogglePerks(category)
+function SynastriaPerkManager.TogglePerks(category, load)
     local toggleTable = SynastriaPerkManager.activePerks[category]
     if toggleTable then
         for perkId, perkActive in pairs(toggleTable) do
-            local widgetLine = perkWidgetMappings[perkId]
-            if widgetLine ~= nil then 
-                _G["PerkMgrFrame-PerkLine-"..widgetLine]:Click()
-                PerkMgrFrame.cele.toggleSel()
+            -- check if perk is allowed for our class
+            local perk = PerkMgrPerks[perkId]
+            if (category ~= "Class" or CMCGetClassAt(1) == perk.cat) or (category ~= "Dual Class" or CMCGetClassAt(2) == perk.cat) then
+                if perk.req == 0 or bit.band(CMCGetClassMask(), perk.req) ~= 0 then 
+                    local widgetNum = perkWidgetMappings[perkId]
+                    if widgetNum ~= nil then
+                        local perkLine = _G["PerkMgrFrame-PerkLine-"..widgetNum]
+                        if not perkLine:IsVisible() then
+                            print("encountered error loading perks")
+                            return
+                        end
+                        perkLine:Click()
+                        if _G["PerkMgrFrame-Toggle"]:IsEnabled() ~= 0 then
+                            PerkMgrFrame.cele.toggleSel()
+                        end
+                        for perkOptionIndex, perkOptionValue in ipairs(SynastriaPerkManager.ParseBinaryInteger(tonumber(perkActive))) do
+                            ChangePerkOption(perkId,perkOptionIndex,perkOptionValue and load)
+                        end
+                    end
+                end
             end
         end
     end
+end
+
+function SynastriaPerkManager.ParseBinaryInteger(num)
+    local tbl = {}
+    if not num or num == 0 then
+        return tbl
+    end
+    while num > 0 do
+        local rest = math.fmod(num, 2)
+        table.insert(tbl, rest)
+        num = (num - rest) / 2
+    end
+    return tbl
 end
 
 function SynastriaPerkManager.UpdatePerkList()
@@ -211,7 +239,7 @@ function SynastriaPerkManager.UpdatePerkList()
             SynastriaPerkManager.activePerks[cat] = SynastriaPerkManager.activePerks[cat] or {}
             if SynastriaPerkManager.activePerks[cat][perkId] == nil then
                 --SynastriaPerkManager.activePerks[cat][perkId] = SynastriaPerkManager.activePerks[cat][perkId] or {}
-                table.insert(SynastriaPerkManager.activePerks[cat],perkId,true)
+                table.insert(SynastriaPerkManager.activePerks[cat],perkId,GetPerkOptions(perkId))
             end
         end
     end
