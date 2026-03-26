@@ -447,21 +447,24 @@ function SynastriaPerkManager.BuildPerkManagerFrame()
             end
             activePerk = PerkMgrPerks[selectedPerkId]
         end
-        local subName = PerkMgrFrameABSubName:GetText()
-        local _,_,rankText = string.find(subName, "Rank (%d+)")
-        if rankText then
-            activePerkRank = tonumber(rankText)
+        if PerkMgrPerks[selectedPerkId].levels[10] then
+            
+            local subName = PerkMgrFrameABSubName:GetText()
+            local _,_,rankText = string.find(subName, "Rank (%d+)")
+            if rankText then
+                activePerkRank = tonumber(rankText)
+            end
+            --print(activePerkRank)
+            textToChange = frameRef.cele.abnexttext
+            if activePerkRank == 10 then
+                textToChange = frameRef.cele.abcurtext
+            end
+            
+            textToChange:SetText(CustomGenerateDescription(activePerk.desc, activePerk.levels[value].amounts, nil))
+            
+            --print(selectedPerkName..", ID: "..selectedPerkId)
+            --print("Slider changed to:", value)
         end
-        --print(activePerkRank)
-        textToChange = frameRef.cele.abnexttext
-        if activePerkRank == 10 then
-            textToChange = frameRef.cele.abcurtext
-        end
-
-        textToChange:SetText(CustomGenerateDescription(activePerk.desc, activePerk.levels[value].amounts, nil))
-
-        print(selectedPerkName..", ID: "..selectedPerkId)
-        --print("Slider changed to:", value)
     end)
 
     --print("SynastriaPerkManager width "..masterFrame:GetWidth())
