@@ -207,8 +207,10 @@ function SynastriaPerkManager.TogglePerks(category, load)
                         if _G["PerkMgrFrame-Toggle"]:IsEnabled() ~= 0 then
                             PerkMgrFrame.cele.toggleSel()
                         end
+                        print()
                         for perkOptionIndex, perkOptionValue in ipairs(SynastriaPerkManager.ParseBinaryInteger(tonumber(perkActive))) do
-                            ChangePerkOption(perkId,perkOptionIndex,perkOptionValue and load)
+                            print(perkId..", "..perkOptionIndex..", "..perkOptionValue)
+                            ChangePerkOption(perkId,perkOptionIndex,(perkOptionValue==1 and load))
                         end
                     end
                 end
