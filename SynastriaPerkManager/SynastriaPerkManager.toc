@@ -1,0 +1,9 @@
+## Interface: 30300
+## Title: Synastria Perk Manager
+## Notes: Save, load, import, and export sets and subsets of Perks
+## Author: Netrinil
+## SavedVariables: SPMData
+## Version: 1.0.0
+
+SynastriaPerkManager.lua
+SynastriaPerkManager.xml
