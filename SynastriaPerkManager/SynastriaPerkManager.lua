@@ -73,7 +73,9 @@ StaticPopupDialogs["SPM_RENAME_BUILD"] = {
         local oldName = SynastriaPerkManager.GetSlotName(category, SPMData.builds[category][slot])
         print(string.format("Renamed %s %s to: %s", category, slot, newName))
         SPMData.builds[category][newName] = SPMData.builds[category][slot]
-        SPMData.builds[category][oldName] = nil
+        if SPMData.builds[category][oldName] ~= nil and oldName ~= nil then 
+            SPMData.builds[category][oldName] = nil
+        end
     end
 }
 
