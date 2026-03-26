@@ -70,6 +70,10 @@ StaticPopupDialogs["SPM_RENAME_BUILD"] = {
         local slot     = self.data.slot
 
         -- Save the new name
+        if SPMData.builds[category][slot] == nil then
+            print("You are attempting to rename an empty slot. Please save here first")
+            return
+        end
         local oldName = SynastriaPerkManager.GetSlotName(category, SPMData.builds[category][slot])
         print(string.format("Renamed %s %s to: %s", category, slot, newName))
         SPMData.builds[category][newName] = SPMData.builds[category][slot]
