@@ -190,6 +190,15 @@ end
 
 function SynastriaPerkManager.TogglePerks(category, load)
     local toggleTable = SynastriaPerkManager.activePerks[category]
+
+    local catSuffixes = {"Off", "Def", "Sup", "Uti", "Cla", "Clb", "Mis"}
+    
+    for _, catSuffix in ipairs(catSuffixes) do
+        if _G["PerkMgrFrame-Cat"..catSuffix] and _G["PerkMgrFrame-Cat"..catSuffix].isCollapsed then
+            _G["PerkMgrFrame-Cat"..catSuffix]:Click()
+        end
+    end
+
     if toggleTable then
         for perkId, perkActive in pairs(toggleTable) do
             -- check if perk is allowed for our class
@@ -207,9 +216,8 @@ function SynastriaPerkManager.TogglePerks(category, load)
                         if _G["PerkMgrFrame-Toggle"]:IsEnabled() ~= 0 then
                             PerkMgrFrame.cele.toggleSel()
                         end
-                        print()
+                        
                         for perkOptionIndex, perkOptionValue in ipairs(SynastriaPerkManager.ParseBinaryInteger(tonumber(perkActive))) do
-                            print(perkId..", "..perkOptionIndex..", "..perkOptionValue)
                             ChangePerkOption(perkId,perkOptionIndex,(perkOptionValue==1 and load))
                         end
                     end
