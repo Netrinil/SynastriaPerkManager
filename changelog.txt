@@ -1,2 +1,20 @@
+v1.1.0 - Import/Export & Build Overhaul
+ - [Feature] Unhides the Build dropdown, which handles full sets of perks as opposed to the previous subsets
+ - [Feature] Adds support for importing and exporting build strings
+ - [Feature] Perk sets and subsets can be directly deleted, allowing for easier data management
+ - [QoL] Importing is compatible with existing Synastria Build Manager build strings
+ - [QoL] Loading perks will now remember which category lists are expanding or collapsed and will remember the All/Active filter
+ - [QoL] Perk sets and subsets will be automatically filtered if any of the perks are unusable by the current class/combo
+
+v1.0.3
+ - [Bug] Fixed an issue with collapsed categories, so loading will forcefully open the collapsible categories
+
+v1.0.2
+ - [Bug] Correctly handles loading perk options
+
+v1.0.1
+ - [Bug] No longer allows renaming empty slots. Please save first
+
 v1.0.0 - Initial Release
- - Multi-Level dropdowns supporting saving, loading, and renaming perk subsets
+ - [Feature] Multi-Level dropdowns supporting saving, loading, and renaming perk subsets
+ - [Feature] Adds a slider to preview different perk ranks
